@@ -22,7 +22,7 @@ Antes de compilar, é necessário instalar a biblioteca **SFML 2.5+**.
 ```bash
 sudo apt install libsfml-dev
 ````
-###✔️ **No Windows:**
+### ✔️ **No Windows:**
 
 Baixe a SFML em:
 https://www.sfml-dev.org/download.php
@@ -47,7 +47,9 @@ g++ pacman2.cpp -o pacman.exe -IC:\SFML\include -LC:\SFML\lib \
 
 pacman.exe
 
-##**🗺️ Estrutura do Mapa**
+
+---
+## **🗺️ Estrutura do Mapa**
 
 O mapa está definido como uma matriz de caracteres:
 
@@ -65,7 +67,9 @@ O mapa está definido como uma matriz de caracteres:
 
     Espaços ( ) são áreas de movimento livre
 
-##**🎮 Mecânicas Implementadas**
+    
+---
+## **🎮 Mecânicas Implementadas**
 🟡 Pac-Man
 
     Movimentação suave com animação
@@ -122,7 +126,9 @@ Se a pontuação atingir o total das pílulas do mapa:
 
     O jogo encerra
 
-##📁 **Arquivos Necessários**
+    
+---
+## 📁**Arquivos Necessários**
 
 Na mesma pasta do executável, devem estar:
 
