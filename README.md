@@ -22,32 +22,32 @@ Antes de compilar, é necessário instalar a biblioteca **SFML 2.5+**.
 ```bash
 sudo apt install libsfml-dev
 ````
-#####✔️ No Windows:
+###✔️ **No Windows:**
 
 Baixe a SFML em:
 https://www.sfml-dev.org/download.php
 
 E configure o compilador (MinGW/Visual Studio).
-🔧 Como Compilar
-Usando g++:
+**🔧 Como Compilar**
+**Usando g++:**
 ````bash
 g++ pacman2.cpp -o pacman -lsfml-graphics -lsfml-window -lsfml-system
 ````
-No Windows (MinGW):
+**No Windows (MinGW):**
 ```bash
 g++ pacman2.cpp -o pacman.exe -IC:\SFML\include -LC:\SFML\lib \
 -lsfml-graphics -lsfml-window -lsfml-system
 ```
 ⚠️ É obrigatório colocar as DLLs da SFML na mesma pasta do .exe, caso esteja no Windows.
-#####▶️ Como Executar
+###**▶️ Como Executar**
 
 ./pacman
 
-Ou no Windows:
+**Ou no Windows:**
 
 pacman.exe
 
-######🗺️ Estrutura do Mapa
+##**🗺️ Estrutura do Mapa**
 
 O mapa está definido como uma matriz de caracteres:
 
@@ -65,7 +65,7 @@ O mapa está definido como uma matriz de caracteres:
 
     Espaços ( ) são áreas de movimento livre
 
-#######🎮 Mecânicas Implementadas
+##**🎮 Mecânicas Implementadas**
 🟡 Pac-Man
 
     Movimentação suave com animação
@@ -78,7 +78,7 @@ O mapa está definido como uma matriz de caracteres:
 
     Consumo de pílulas incrementa pontuação
 
-👻 Fantasmas (Goompas)
+👻 **Fantasmas (Goompas)**
 
 Cada fantasma possui:
 
@@ -104,7 +104,7 @@ Direções são escolhidas com base em:
 
     Verificar paredes e portões
 
-🟥 Game Over
+🟥 **Game Over**
 
 Se qualquer fantasma alcança o Pac-Man:
 
@@ -114,7 +114,7 @@ Se qualquer fantasma alcança o Pac-Man:
 
     O jogo encerra
 
-🟩 Vitória
+🟩 **Vitória**
 
 Se a pontuação atingir o total das pílulas do mapa:
 
@@ -122,7 +122,7 @@ Se a pontuação atingir o total das pílulas do mapa:
 
     O jogo encerra
 
-📁 Arquivos Necessários
+##📁 **Arquivos Necessários**
 
 Na mesma pasta do executável, devem estar:
 
@@ -148,7 +148,7 @@ Esses arquivos fornecem:
 
     Fonte utilizada no jogo
 
-🧠 Lógica Importante Implementada
+##🧠 **Lógica Importante Implementada**
 Atualização da posição lógica (grid):
 ```bash
 void atualizaPosicaoLogica(int &x, int &y, float x_real, float y_real)
