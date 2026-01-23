@@ -1,4 +1,6 @@
 #include <SFML/Graphics.hpp>
+#include "fantasmas.h"
+#include "mapa.h"
 #include <iostream>
 #include <cmath>
 #include <vector>
@@ -6,30 +8,7 @@
 
 // --- Código base para jogo do Pac-Man usando SFML ---
 
-const int SIZE = 16; // Tamanho de cada célula do mapa
-
-char mapa[21][23] = { // Mapa do jogo
-    " ###################  ",
-    " #........#........#  ",
-    " #.##.###.#.###.##.#  ",
-    " #.................#  ",
-    " #.##.#.#####.#.##.#  ",
-    " #....#...#...#....#  ",
-    " ####.### # ###.####  ",
-    "    #.#   0   #.#     ",
-    "#####.# ##=## #.#####-",
-    "     .  #123#  .      ",
-    "#####.# ##### #.#####-",
-    "    #.#       #.#     ",
-    " ####.# ##### #.####  ",
-    " #........#........#  ",
-    " #.##.###.#.###.##.#  ",
-    " #..#.....P.....#..#  ",
-    " ##.#.#.#####.#.#.##  ",
-    " #....#...#...#....#  ",
-    " #.######.#.######.#  ",
-    " #.................#  ",
-    " ###################  "};
+const int SIZE=16;
 
 // --- Variáveis do Pac-Man ---
 int posx, posy;
@@ -37,17 +16,6 @@ float posxreal, posyreal;
 bool cima = false, baixo = false, esq = false, dir = true;                                  // Direção ATUAL
 bool intencaocima = false, intencaobaixo = false, intencaoesq = false, intencaodir = false; // INTENÇÃO
 
-// --- Estrutura para os Fantasmas ---
-struct Fantasma
-{
-    int x, y;             // Posição lógica (no grid)
-    float x_real, y_real; // Posição real (em pixels)
-    int targetX, targetY; // Onde ele quer chegar
-    bool cima, baixo, esq, dir;
-    bool casinha = false; // Direção atual
-
-    // Adicionaremos estados (perseguindo, assustado) depois
-};
 
 // Crie um array de fantasmas
 Fantasma fantasmas[4];
@@ -57,11 +25,7 @@ int pontuacao = 0;
 
 // escopo das funções
 void atualizaPosicaoLogica(int &x, int &y, float x_real, float y_real);
-void desenhaMapa(sf::RenderWindow &window, char mapa[21][23], sf::Sprite spriteparede[16],
-                 sf::Sprite &spritePortao, sf::Sprite &spritecircle, int SIZE);
-void moverFantasma(Fantasma &f, float ghostSpeed);
 void verificarTunel(int &x, float &x_real, int SIZE);
-float calcularDistancia(int x1, int y1, int x2, int y2);
 
 int main()
 {
@@ -70,14 +34,14 @@ int main()
     {
         for (int j = 0; j < 22; j++)
         {
-            if (mapa[i][j] == 'P')    //Pega a posicao inicial do pacman
+            if (Mapa::mapa[i][j] == 'P')    //Pega a posicao inicial do pacman
             {
                 posx = j;
                 posy = i;
                 posxreal = j * SIZE;
                 posyreal = i * SIZE;
             }
-            else if (mapa[i][j] == '0') // Pega a posicao do Goompa vermelho
+            else if (Mapa::mapa[i][j] == '0') // Pega a posicao do Goompa vermelho
             {
                 fantasmas[0].x = j;
                 fantasmas[0].y = i;
@@ -85,7 +49,7 @@ int main()
                 fantasmas[0].y_real = i * SIZE;
                 fantasmas[0].esq = true; // Direção inicial
             }
-            else if (mapa[i][j] == '1') // Pega a posicao do Goompa ciano
+            else if (Mapa::mapa[i][j] == '1') // Pega a posicao do Goompa ciano
             {
                 fantasmas[1].x = j; 
                 fantasmas[1].y = i;
@@ -94,7 +58,7 @@ int main()
                 fantasmas[1].esq = true; // Direção inicial
                 fantasmas[1].casinha = true;
             }
-            else if (mapa[i][j] == '2') // Pega a posicao do Goompa rosa
+            else if (Mapa::mapa[i][j] == '2') // Pega a posicao do Goompa rosa
             {
                 fantasmas[2].x = j;
                 fantasmas[2].y = i;
@@ -103,7 +67,7 @@ int main()
                 fantasmas[2].esq = true; // Direção inicial
                 fantasmas[2].casinha = true;
             }
-            else if (mapa[i][j] == '3') // Pega a posicao do Goompa laranja 
+            else if (Mapa::mapa[i][j] == '3') // Pega a posicao do Goompa laranja 
             {
                 fantasmas[3].x = j;
                 fantasmas[3].y = i;
@@ -258,22 +222,22 @@ int main()
 
             //verifica as condiçoes para validade do movimento, armazena a direcao válida e inicia o movimento na direçao
  
-            if (dir && intencaoesq && mapa[posy][posx - 1] != '#')
+            if (dir && intencaoesq && Mapa::mapa[posy][posx - 1] != '#')
             {
                 esq = true;
                 dir = cima = baixo = false;
             }
-            else if (esq && intencaodir && mapa[posy][posx + 1] != '#')
+            else if (esq && intencaodir && Mapa::mapa[posy][posx + 1] != '#')
             {
                 dir = true;
                 esq = cima = baixo = false;
             }
-            else if (cima && intencaobaixo && mapa[posy + 1][posx] != '#')
+            else if (cima && intencaobaixo && Mapa::mapa[posy + 1][posx] != '#')
             {
                 baixo = true;
                 cima = esq = dir = false;
             }
-            else if (baixo && intencaocima && mapa[posy - 1][posx] != '#')
+            else if (baixo && intencaocima && Mapa::mapa[posy - 1][posx] != '#')
             {
                 cima = true;
                 baixo = esq = dir = false;
@@ -281,38 +245,38 @@ int main()
 
             else if (estaAlinhadoVertical && estaAlinhadoHorizontal && dentrodomapa)
             {
-                if (intencaocima && mapa[posy - 1][posx] != '#')
+                if (intencaocima && Mapa::mapa[posy - 1][posx] != '#')
                 {
                     cima = true;
                     baixo = esq = dir = false;
                 }
-                else if (intencaobaixo && mapa[posy + 1][posx] != '#' && mapa[posy + 1][posx] != '=')
+                else if (intencaobaixo && Mapa::mapa[posy + 1][posx] != '#' && Mapa::mapa[posy + 1][posx] != '=')
                 {
                     baixo = true;
                     cima = esq = dir = false;
                 }
-                else if (intencaoesq && mapa[posy][posx - 1] != '#')
+                else if (intencaoesq && Mapa::mapa[posy][posx - 1] != '#')
                 {
                     esq = true;
                     dir = cima = baixo = false;
                 }
-                else if (intencaodir && mapa[posy][posx + 1] != '#')
+                else if (intencaodir && Mapa::mapa[posy][posx + 1] != '#')
                 {
                     dir = true;
                     esq = cima = baixo = false;
                 }
             }
 
-            if (cima && mapa[posy - 1][posx] == '#' && posyreal <= (posy - 1) * SIZE + SIZE)
+            if (cima && Mapa::mapa[posy - 1][posx] == '#' && posyreal <= (posy - 1) * SIZE + SIZE)
             {
             }
-            else if (baixo && (mapa[posy + 1][posx] == '#' || mapa[posy + 1][posx] == '=') && posyreal >= (posy + 1) * SIZE - SIZE)
+            else if (baixo && (Mapa::mapa[posy + 1][posx] == '#' || Mapa::mapa[posy + 1][posx] == '=') && posyreal >= (posy + 1) * SIZE - SIZE)
             {
             }
-            else if (esq && mapa[posy][posx - 1] == '#' && posxreal <= (posx - 1) * SIZE + SIZE)
+            else if (esq && Mapa::mapa[posy][posx - 1] == '#' && posxreal <= (posx - 1) * SIZE + SIZE)
             {
             }
-            else if (dir && mapa[posy][posx + 1] == '#' && posxreal >= (posx + 1) * SIZE - SIZE)
+            else if (dir && Mapa::mapa[posy][posx + 1] == '#' && posxreal >= (posx + 1) * SIZE - SIZE)
             {
             }
             else
@@ -332,10 +296,10 @@ int main()
 
             //incrementa a pontuação se o pacman coleta a pilula
 
-            if (mapa[posy][posx] == '.')
+            if (Mapa::mapa[posy][posx] == '.')
             {
                 pontuacao += 10;
-                mapa[posy][posx] = ' ';
+                Mapa::mapa[posy][posx] = ' ';
             }
 
 
@@ -424,7 +388,7 @@ int main()
                         }
                         else // os outros dois seguirão pac man até certa distancia, e depois recuarão para seu canto do mapa 
                         {
-                            float dist = calcularDistancia(fantasmas[i].x, fantasmas[i].y, posx, posy);
+                            float dist = Fantasma::calcularDistancia(fantasmas[i].x, fantasmas[i].y, posx, posy);
 
                             if (dist > 3)
                             {
@@ -453,7 +417,7 @@ int main()
                 }
 
                 // 3. CHAMA A IA para mover o fantasma em direção ao alvo
-                moverFantasma(fantasmas[i], ghostSpeed);
+                Fantasma::moverFantasma(fantasmas[i], ghostSpeed);
             }
         }
 
@@ -469,7 +433,7 @@ int main()
         // 3. DESENHO DOS GOOMPAS
         // 4. DESENHO DO SCORE
         window.clear(sf::Color::Black);
-        desenhaMapa(window, mapa, spriteparede, spritePortao, spritecircle, SIZE);
+        Mapa::desenhaMapa(window, Mapa::mapa, spriteparede, spritePortao, spritecircle, SIZE);
 
         sf::Sprite pacmanSprite;
         if (dir)
@@ -505,7 +469,7 @@ int main()
             for (int i = 0; i < 12; i++)
             {
                 window.clear();
-                desenhaMapa(window, mapa, spriteparede, spritePortao, spritecircle, SIZE);
+                Mapa::desenhaMapa(window, Mapa::mapa, spriteparede, spritePortao, spritecircle, SIZE);
 
                 spritePacmanDeath[i].setPosition(posxreal, posyreal + deslocamento);
                 window.draw(spritePacmanDeath[i]);
@@ -538,95 +502,6 @@ int main()
 
 // ABAIXO ESTÃO AS FUNÇÕES DO JOGO
 
-void desenhaMapa(sf::RenderWindow &window, char mapa[21][23], sf::Sprite spriteparede[16], sf::Sprite &spritePortao, sf::Sprite &spritecircle, int SIZE)
-{
-    // função de desenhar o mapa, usa testes para verificar qual area do sprite usar para determinada area da parede.
-    for (int i = 0; i < 21; i++)
-        for (int j = 0; j < 23; j++)
-        {
-            if (mapa[i][j] == '#' && (mapa[i + 1][j] != '#' && mapa[i - 1][j] != '#' && mapa[i][j - 1] == '#' && mapa[i][j + 1] == '#'))
-            {
-                spriteparede[6].setPosition(j * SIZE, i * SIZE + deslocamento);
-                window.draw(spriteparede[6]);
-            }
-            else if (mapa[i][j] == '#' && (mapa[i][j + 1] != '#' && mapa[i][j - 1] != '#' && mapa[i + 1][j] == '#' && mapa[i - 1][j] == '#'))
-            {
-                spriteparede[9].setPosition(j * SIZE, i * SIZE + deslocamento);
-                window.draw(spriteparede[9]);
-            }
-            else if (mapa[i][j] == '#' && (mapa[i + 1][j] == '#' && mapa[i - 1][j] == '#' && mapa[i][j - 1] == '#'))
-            {
-                spriteparede[11].setPosition(j * SIZE, i * SIZE + deslocamento);
-                window.draw(spriteparede[11]);
-            }
-            else if (mapa[i][j] == '#' && (mapa[i + 1][j] == '#' && mapa[i - 1][j] == '#' && mapa[i][j + 1] == '#'))
-            {
-                spriteparede[13].setPosition(j * SIZE, i * SIZE + deslocamento);
-                window.draw(spriteparede[13]);
-            }
-            else if (mapa[i][j] == '#' && (mapa[i + 1][j] == '#' && mapa[i][j + 1] == '#' && mapa[i][j - 1] == '#'))
-            {
-                spriteparede[7].setPosition(j * SIZE, i * SIZE + deslocamento);
-                window.draw(spriteparede[7]);
-            }
-            else if (mapa[i][j] == '#' && (mapa[i - 1][j] == '#' && mapa[i][j + 1] == '#' && mapa[i][j - 1] == '#'))
-            {
-                spriteparede[14].setPosition(j * SIZE, i * SIZE + deslocamento);
-                window.draw(spriteparede[14]);
-            }
-            else if (mapa[i][j] == '#' && (mapa[i + 1][j] == '#' && mapa[i][j + 1] == '#' && mapa[i][j - 1] != '#' && mapa[i - 1][j] != '#'))
-            {
-                spriteparede[5].setPosition(j * SIZE, i * SIZE + deslocamento);
-                window.draw(spriteparede[5]);
-            }
-            else if (mapa[i][j] == '#' && (mapa[i + 1][j] == '#' && mapa[i][j - 1] == '#' && mapa[i][j + 1] != '#' && mapa[i - 1][j] != '#'))
-            {
-                spriteparede[3].setPosition(j * SIZE, i * SIZE + deslocamento);
-                window.draw(spriteparede[3]);
-            }
-            else if (mapa[i][j] == '#' && (mapa[i - 1][j] == '#' && mapa[i][j + 1] == '#' && mapa[i][j - 1] != '#' && mapa[i + 1][j] != '#'))
-            {
-                spriteparede[12].setPosition(j * SIZE, i * SIZE + deslocamento);
-                window.draw(spriteparede[12]);
-            }
-            else if (mapa[i][j] == '#' && (mapa[i - 1][j] == '#' && mapa[i][j - 1] == '#' && mapa[i][j + 1] != '#' && mapa[i + 1][j] != '#'))
-            {
-                spriteparede[10].setPosition(j * SIZE, i * SIZE + deslocamento);
-                window.draw(spriteparede[10]);
-            }
-            else if (mapa[i][j] == '#' && (mapa[i][j - 1] == '#' && mapa[i][j + 1] != '#' && mapa[i + 1][j] != '#' && mapa[i - 1][j] != '#'))
-            {
-                spriteparede[2].setPosition(j * SIZE, i * SIZE + deslocamento);
-                window.draw(spriteparede[2]);
-            }
-            else if (mapa[i][j] == '#' && (mapa[i][j + 1] == '#' && mapa[i][j - 1] != '#' && mapa[i + 1][j] != '#' && mapa[i - 1][j] != '#'))
-            {
-                spriteparede[4].setPosition(j * SIZE, i * SIZE + deslocamento);
-                window.draw(spriteparede[4]);
-            }
-            else if (mapa[i][j] == '#' && (mapa[i + 1][j] != '#' && mapa[i][j + 1] != '#' && mapa[i][j - 1] != '#'))
-            {
-                spriteparede[8].setPosition(j * SIZE, i * SIZE + deslocamento);
-                window.draw(spriteparede[8]);
-            }
-            else if (mapa[i][j] == '#' && (mapa[i - 1][j] != '#' && mapa[i][j + 1] != '#' && mapa[i][j - 1] != '#'))
-            {
-                spriteparede[1].setPosition(j * SIZE, i * SIZE + deslocamento);
-                window.draw(spriteparede[1]);
-            }
-            else if (mapa[i][j] == '=')
-            {
-                spritePortao.setPosition(j * SIZE, i * SIZE + deslocamento);
-                window.draw(spritePortao);
-            }
-            else if (mapa[i][j] == '.')
-            {
-                spritecircle.setPosition(j * SIZE, i * SIZE + deslocamento);
-                spritecircle.setScale(1, 1);
-                window.draw(spritecircle);
-            }
-        }
-}
 // funcao para atualizar posição logica(posx e posy)
 void atualizaPosicaoLogica(int &x, int &y, float x_real, float y_real)
 {
@@ -634,95 +509,6 @@ void atualizaPosicaoLogica(int &x, int &y, float x_real, float y_real)
     y = (int)(y_real + SIZE / 2) / SIZE;
 }
 
-// --- FUNÇÕES DE IA DOS FANTASMAS ---
-
-// Função que calcula a distância euclidiana entre dois pontos
-float calcularDistancia(int x1, int y1, int x2, int y2)
-{
-    return std::sqrt(std::pow(x2 - x1, 2) + std::pow(y2 - y1, 2));
-}
-
-// A função principal que decide a direção e move um fantasma
-void moverFantasma(Fantasma &f, float ghostSpeed)
-{
-    // Só toma uma nova decisão de direção se estiver perfeitamente alinhado com o grid
-    bool alinhadoHorizontal = (int)f.x_real % SIZE == 0;
-    bool alinhadoVertical = (int)f.y_real % SIZE == 0;
-
-    if (alinhadoHorizontal && alinhadoVertical)
-    {
-        // --- DECIDE A DIREÇÃO ---
-        float menorDistancia = std::numeric_limits<float>::max();
-        bool dirCima = false, dirBaixo = false, dirEsq = false, dirDir = false;
-
-        // Tenta ir para CIMA (se não for parede e se não veio de BAIXO)
-        if (mapa[f.y - 1][f.x] != '#' && mapa[f.y - 1][f.x] != '-' && !f.baixo || (f.x == 10 && f.y == 9))
-        {
-            float dist = calcularDistancia(f.x, f.y - 1, f.targetX, f.targetY);
-            if (dist < menorDistancia || (f.x == 10 && f.y == 9))
-            {
-                menorDistancia = dist;
-                dirCima = true;
-                dirBaixo = dirEsq = dirDir = false;
-            }
-        }
-
-        // Tenta ir para BAIXO (se não for parede/portão e se não veio de CIMA)
-        if (mapa[f.y + 1][f.x] != '#' && mapa[f.y + 1][f.x] != '=' && mapa[f.y + 1][f.x] != '-' && !f.cima)
-        {
-            float dist = calcularDistancia(f.x, f.y + 1, f.targetX, f.targetY);
-            if (dist < menorDistancia)
-            {
-                menorDistancia = dist;
-                dirBaixo = true;
-                dirCima = dirEsq = dirDir = false;
-            }
-        }
-        // Tenta ir para ESQUERDA (se não for parede e se não veio da DIREITA)
-
-        if (mapa[f.y][f.x - 1] != '#' && !f.dir || (f.x == 11 && f.y == 9))
-        {
-            float dist = calcularDistancia(f.x - 1, f.y, f.targetX, f.targetY);
-            if (dist < menorDistancia)
-            {
-                menorDistancia = dist;
-                dirEsq = true;
-                dirCima = dirBaixo = dirDir = false;
-            }
-        }
-        // Tenta ir para DIREITA (se não for parede e se não veio da ESQUERDA)
-
-        if ((mapa[f.y][f.x + 1] != '#' && !f.esq) || (f.x == 9 && f.y == 9))
-        {
-            float dist = calcularDistancia(f.x + 1, f.y, f.targetX, f.targetY);
-            if (dist < menorDistancia)
-            {
-                menorDistancia = dist;
-                dirDir = true;
-                dirCima = dirBaixo = dirEsq = false;
-            }
-        }
-
-        // Se encontrou uma nova direção ótima, atualiza a direção do fantasma
-        if (dirCima || dirBaixo || dirEsq || dirDir)
-        {
-            f.cima = dirCima;
-            f.baixo = dirBaixo;
-            f.esq = dirEsq;
-            f.dir = dirDir;
-        }
-    }
-
-    // Finalmente, move o fantasma na sua direção atual
-    if (f.cima)
-        f.y_real -= ghostSpeed;
-    if (f.baixo)
-        f.y_real += ghostSpeed;
-    if (f.esq)
-        f.x_real -= ghostSpeed;
-    if (f.dir)
-        f.x_real += ghostSpeed;
-}
 
 // --- FUNÇÃO PARA A LÓGICA DO TÚNEL ---
 
